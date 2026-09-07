@@ -29,12 +29,13 @@ jobs:
         with:
           gradle-version: '8.11.1'
 
-      - name: Fix Java and Kotlin JVM target
+      - name: Fix project
         working-directory: buildsrc/JARVIS-Full
         run: |
           python3 - <<'PY'
           from pathlib import Path
 
+          # Fix Java/Kotlin JVM target
           path = Path("app/build.gradle.kts")
           text = path.read_text()
 
@@ -60,7 +61,17 @@ jobs:
               )
 
           path.write_text(text)
-          print(path.read_text())
+
+          # Fix accidental Thai text inside MainActivity
+          main = Path("app/src/main/java/com/jarvis/app/MainActivity.kt")
+          code = main.read_text()
+
+          code = code.replace("labelแล", "label")
+          code = code.replace("labelในเคร", "label")
+
+          main.write_text(code)
+
+          print("Project fixes applied.")
           PY
 
       - name: Build APK
