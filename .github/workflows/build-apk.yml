@@ -1,4 +1,4 @@
-name: Build Hey AI APK
+name: Build JARVIS APK
 
 on:
   workflow_dispatch:
@@ -14,9 +14,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Extract Hey AI project
+      - name: Extract JARVIS project
         run: |
-          unzip -o HeyAI-Full-Ready.zip -d buildsrc
+          unzip -o JARVIS-Full.zip -d buildsrc
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -30,11 +30,11 @@ jobs:
           gradle-version: '8.11.1'
 
       - name: Build APK
-        working-directory: buildsrc/HeyAI-Full
+        working-directory: buildsrc/JARVIS-Full
         run: gradle :app:assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: HeyAI-APK
-          path: buildsrc/HeyAI-Full/app/build/outputs/apk/debug/app-debug.apk
+          name: JARVIS-APK
+          path: buildsrc/JARVIS-Full/app/build/outputs/apk/debug/app-debug.apk
