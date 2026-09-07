@@ -29,6 +29,40 @@ jobs:
         with:
           gradle-version: '8.11.1'
 
+      - name: Fix Java and Kotlin JVM target
+        working-directory: buildsrc/JARVIS-Full
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("app/build.gradle.kts")
+          text = path.read_text()
+
+          if "compileOptions" not in text:
+              text = text.replace(
+                  "    defaultConfig {",
+                  """    compileOptions {
+                      sourceCompatibility = JavaVersion.VERSION_17
+                      targetCompatibility = JavaVersion.VERSION_17
+                  }
+
+                  defaultConfig {"""
+              )
+
+          if "jvmTarget" not in text:
+              text = text.replace(
+                  "    defaultConfig {",
+                  """    kotlinOptions {
+                      jvmTarget = "17"
+                  }
+
+                  defaultConfig {"""
+              )
+
+          path.write_text(text)
+          print(path.read_text())
+          PY
+
       - name: Build APK
         working-directory: buildsrc/JARVIS-Full
         run: gradle :app:assembleDebug --no-daemon
